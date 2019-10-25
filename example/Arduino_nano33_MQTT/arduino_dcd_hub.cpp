@@ -13,7 +13,7 @@ arduino_dcd_hub::arduino_dcd_hub() {
 void arduino_dcd_hub::connect(String ssid, String pass, String thing_id, String thing_token, String client_id)
 {
 
-  _thing_id = _thing_id;
+  _thing_id = thing_id;
 
   Serial.print("Attempting to connect to WPA SSID: ");
   Serial.println(ssid);
@@ -46,10 +46,9 @@ void arduino_dcd_hub::connect(String ssid, String pass, String thing_id, String 
 }
 
 
-void arduino_dcd_hub::update_property (String property_id, int values) {
+void arduino_dcd_hub::update_property (String property_id, int values[]) {
 
   topic = "/things/" + _thing_id + "/properties/" + property_id; // topic to publish data on MQTT for DCD hub
-
   unsigned long currentMillis = millis();
 
   if (currentMillis - previousMillis >= interval) {
@@ -62,7 +61,7 @@ void arduino_dcd_hub::update_property (String property_id, int values) {
     String json = "{\"id\":\"";
     json.concat(property_id);
     json.concat("\",\"values\":[[");
-    json.concat(values);
+    json.concat(values[3]);
     json.concat("]]}");
     Serial.print("pushing..");
 
@@ -72,8 +71,8 @@ void arduino_dcd_hub::update_property (String property_id, int values) {
     mqttClientPtr->endMessage();
 
     Serial.println();
-
   }
+  
 }
 
 void arduino_dcd_hub::keep_alive_mqtt () {
