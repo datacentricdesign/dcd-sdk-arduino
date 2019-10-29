@@ -25,7 +25,11 @@ void loop() {
   // avoids being disconnected by the broker
   dcdHub.keep_alive_mqtt();
   
-  int value[] = {random(5)};
+  float value[] = {random(5)};
+  float value2[] = {random(80), random(25)};
+  float value3[] = {random(80), random(25), random(60)};
 
-  dcdHub.update_property("random-02d3",value);
+  dcdHub.update_property("random-02d3",value, 1);
+  dcdHub.update_property("random-02d3",value2, 2);
+  dcdHub.update_property("random-3d-499b",value3, 3);
 }
