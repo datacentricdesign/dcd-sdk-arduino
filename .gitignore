@@ -35,3 +35,4 @@
 .idea
 
 //Credentials file
+/example/Arduino_nano33_MQTT/arduino_secrets.h
