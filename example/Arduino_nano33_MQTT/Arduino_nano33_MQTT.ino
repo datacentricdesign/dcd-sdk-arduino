@@ -12,13 +12,11 @@
 dcd_hub_arduino dcdHub; //creates a class object from library
 
 void setup() {
-  
   //Initialize serial and wait for port to open:
   Serial.begin(115200);
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-
   
   // Connects to dcd hub using your secret credential from "arduino_secrets.h"
   //{class_object}.connect(SECRET_SSID, SECRET_PASS, THING_ID, THING_TOKEN)
