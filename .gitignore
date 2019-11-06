@@ -33,3 +33,6 @@
 
 *.iml
 .idea
+
+//Credentials file
+arduino_secrets.h
