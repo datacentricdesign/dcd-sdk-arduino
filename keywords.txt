@@ -1,0 +1,22 @@
+#######################################
+# Syntax Coloring Map For DCD SDK Arduino
+#######################################
+
+#######################################
+# Library (KEYWORD1)
+#######################################
+
+dcd_hub_arduino KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+connect KEYWORD2
+update_property KEYWORD2
+keep_alive_mqtt KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+
