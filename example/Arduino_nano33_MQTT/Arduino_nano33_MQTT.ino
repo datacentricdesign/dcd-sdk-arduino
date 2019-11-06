@@ -1,52 +1,15 @@
-#include <ArduinoMqttClient.h>
-#include <WiFiNINA.h>
-#include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
-#include <utility/imumaths.h>
+// The example uses an arduno sdk for DCD hub to connect and update
+// individual thing's property.
+// You can check live update on your dcd hub dashboard after a successful
+// connection here: https://dwd.tudelft.nl/subject.
+//
+// by Nirav Malsattar <n.malsattar@tudelft.nl>
+// https://github.com/datacentricdesign/dcd-sdk-arduino
+
 #include "arduino_secrets.h"
+#include <dcd_hub_arduino.h>
 
-///////please enter your sensitive data in the Secret tab/arduino_secrets.h
-char ssid[] = SECRET_SSID;        // your network SSID (name)
-char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
-const String thing_id = THING_ID; // thing Id
-const String thing_token = THING_TOKEN; // Token for created thing
-
-WiFiSSLClient wifiClient;
-MqttClient mqttClient(wifiClient);
-
-String broker = "dwd.tudelft.nl"; //mqtt host
-int port = 8883; //mqtt port
-const String client_id = "Arduino Nano 33 IoT";
-String topic  = "/things/" + thing_id + "/properties/random-02d3"; // topic to publish data on MQTT for DCD hub
-
-const long interval = 1000;
-unsigned long previousMillis = 0;
-int values[] = {0, 0, 0};
-int count = 0;
-
-void messageReceived(int messageSize) {
-  // we received a message, print out the topic and contents
-  Serial.print("Received a message with topic '");
-  Serial.print(mqttClient.messageTopic());
-  Serial.print("', duplicate = ");
-  Serial.print(mqttClient.messageDup() ? "true" : "false");
-  Serial.print(", QoS = ");
-  Serial.print(mqttClient.messageQoS());
-  Serial.print(", retained = ");
-  Serial.print(mqttClient.messageRetain() ? "true" : "false");
-  Serial.print("', length ");
-  Serial.print(messageSize);
-  Serial.println(" bytes:");
-
-  // use the Stream interface to print the contents
-  while (mqttClient.available()) {
-    Serial.print((char)mqttClient.read());
-  }
-  Serial.println();
-
-  Serial.println();
-}
+dcd_hub_arduino dcdHub; //creates a class object from library
 
 void setup() {
   //Initialize serial and wait for port to open:
@@ -54,70 +17,30 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-
-  // attempt to connect to Wifi network:
-  Serial.print("Attempting to connect to WPA SSID: ");
-  Serial.println(ssid);
-  while (WiFi.begin(ssid, pass) != WL_CONNECTED) {
-    // failed, retry
-    Serial.print(".");
-    delay(3000);
-  }
-
-  Serial.println("You're connected to the network");
-  Serial.println();
-
-  // You can provide a unique client ID, if not set the library uses Arduino-millis()
-  // Each client must have a unique client ID
-  mqttClient.setId(client_id);
-
-  // You can provide a username and password for authentication
-  mqttClient.setUsernamePassword(THING_ID, THING_TOKEN);
-
-  Serial.print("Attempting to connect to the MQTT broker: ");
-  Serial.println(broker);
-
-  if (!mqttClient.connect(broker.c_str(), port)) {
-    Serial.print("MQTT connection failed! Error code = ");
-    Serial.println(mqttClient.connectError());
-
-    while (1);
-  }
-
-  mqttClient.onMessage(messageReceived);
   
-  Serial.println("You're connected to the MQTT broker!");
+  // Connects to dcd hub using your secret credential from "arduino_secrets.h"
+  //{class_object}.connect(SECRET_SSID, SECRET_PASS, THING_ID, THING_TOKEN)
+  
+  // Make sure you have stored your credentials on "arduino_secrets.h" before running this command
+  
+  dcdHub.connect(SECRET_SSID, SECRET_PASS, THING_ID, THING_TOKEN, "Arduino Nano 33 IoT");
   Serial.println();
 }
 
 void loop() {
-  // call poll() regularly to allow the library to send MQTT keep alives which
-  // avoids being disconnected by the broker
-  mqttClient.poll();
+  
+  // call keep_alive_mqtt() regularly to avoids being disconnected by the MQTT broker
+  dcdHub.keep_alive_mqtt();
 
-  unsigned long currentMillis = millis();
+  // Some random 1D, 2D, 3D values to upload on the hub. Later, you can replace these with your sensors value.  
+  float value[] = {random(5)};
+  float value2[] = {random(80), random(25)};
+  float value3[] = {random(80), random(25), random(60)};
 
-  if (currentMillis - previousMillis >= interval) {
-    // save the last time a message was sent
-    previousMillis = currentMillis;
-
-    Serial.print("Sending message to topic: ");
-    Serial.println(topic);
-
-    int value = random(5);
-
-    String json = "{\"id\":\"random-02d3\",\"values\":[[";
-    json.concat(value);
-    json.concat("]]}");
-    Serial.print("pushing...");
-
-    //send message, the Print interface can be used to set the message contents
-    mqttClient.beginMessage(topic);
-    mqttClient.print(json);
-    mqttClient.endMessage();
-
-    Serial.println();
-
-    count++;
-  }
+  //call to an update_property object to update property value as an array according to it's "proeprty_id"
+  //{class_object}.update property (property_id, value[], dimension)
+  
+  dcdHub.update_property("random-02d3",value, 1);
+  dcdHub.update_property("my-random-property3-e0cf",value2, 2);
+  dcdHub.update_property("my-random-property2-563b",value3, 3);
 }
