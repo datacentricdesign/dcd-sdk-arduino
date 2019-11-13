@@ -2,9 +2,9 @@
 
 This libray allows to connect to dcd hub and update value of thing property provided by property_id.
 
-Currently this library uses MQTT interface to connect to the DCD hub and update particular thing property. In future release there will be more functionality added to create a new property or seatch for exising one.
+Currently this library uses MQTT interface to connect to the DCD hub and update particular thing property. In future release there will be more functionality added to create a new property or search for exising one.
 
-You can find simple example of updating property values from the example provided in the folder.
+You can find simple example of updating property values from the example folder provided with the library.
 
 # Changelog
 
