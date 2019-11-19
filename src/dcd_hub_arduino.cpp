@@ -97,6 +97,8 @@ void dcd_hub_arduino::update_property (String property_id, float values[], int v
     wifiConnect(_ssid, _pass); //Connect to wifi
     mqttConnect(_client_id);  // Connect to mqtt broker
   }
+
+  delay(50);
 }
 
 void dcd_hub_arduino::keep_alive_mqtt () {
