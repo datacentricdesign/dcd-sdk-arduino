@@ -6,6 +6,14 @@ Currently this library uses MQTT interface to connect to the DCD hub and update 
 
 You can find simple example of updating property values from the example folder provided with the library.
 
+# Required Libraries
+Because the DCD Arduino SDK uses on other libraries as dependencies, You need to install those libraries first. 
+
+The libraries you need to installs are:
+
+1. WiFiNINA: enables WiFi enabled Arduino to connect to the internet.
+2. ArduinoMqttClient: This library allows you to connect to any MQTT server and send a message as the topic.
+
 # Changelog
 
 The initial beta version 0.0.1 of the dcd-sdk-arduino library to update property value on the DCD hub.
