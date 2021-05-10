@@ -5,6 +5,9 @@ dcd_hub_arduino::~dcd_hub_arduino() {
 }
 
 dcd_hub_arduino::dcd_hub_arduino() {
+  #ifdef ESP32
+  wifiClient.setInsecure();
+  #endif
   mqttClientPtr = new MqttClient(wifiClient);
 }
 
@@ -12,11 +15,23 @@ void dcd_hub_arduino::wifiConnect(String ssid, String pass) {
   Serial.print("Attempting to connect to WPA SSID: ");
   Serial.println(ssid);
 
+  #ifdef ESP32
+  WiFi.mode(WIFI_STA); //Defines station mode: ESP32 connects to access point
+
+  while (status != WL_CONNECTED) {
+    status =  WiFi.begin((ssid).c_str(), (pass).c_str());
+    Serial.print(".");
+    delay(3000);
+  }
+
+  #else
   while (status != WL_CONNECTED) {
     status =  WiFi.begin((ssid).c_str(), wifiKeyIndex, (pass).c_str());
     Serial.print(".");
     delay(3000);
   }
+
+  #endif
 
   Serial.println("You're connected to the network");
 }
@@ -97,6 +112,8 @@ void dcd_hub_arduino::update_property (String property_id, float values[], int v
     wifiConnect(_ssid, _pass); //Connect to wifi
     mqttConnect(_client_id);  // Connect to mqtt broker
   }
+
+  delay(50);
 }
 
 void dcd_hub_arduino::keep_alive_mqtt () {
