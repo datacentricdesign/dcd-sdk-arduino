@@ -84,7 +84,9 @@ void dcd_hub_arduino::update_property (String property_id, float values[], int v
       Serial.println();
       Serial.print("Sending message to topic: ");
       Serial.println(topic);
-      String json = "{\"id\":\"";
+      String json = "{\"requestId\":";
+      json.concat(random(100));
+      json.concat(",\"property\":{\"id\":\"");
       json.concat(property_id);
       json.concat("\",\"values\":[[");
 
@@ -95,7 +97,7 @@ void dcd_hub_arduino::update_property (String property_id, float values[], int v
         }
       }
 
-      json.concat("]]}");
+      json.concat("]]}}");
       Serial.print("pushing..");
 
       //send message, the Print interface can be used to set the message contents
