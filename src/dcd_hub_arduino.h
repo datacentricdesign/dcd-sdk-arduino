@@ -59,9 +59,9 @@ class dcd_hub_arduino
     const char *ntp_secondary = "time.nist.gov";
 
     // DCD Hub
-    const char *broker = "dwd-test.tudelft.nl";  // mqtt host
-    const char *audience = "https://dwd-test.tudelft.nl:443/bucket/api";
-    const int port = 8883;                       // mqtt port
+    const char *broker = "dwd.tudelft.nl";    // mqtt host
+    const char *audience = "https://dwd.tudelft.nl:443/bucket/api";
+    const int port = 8883;                    // mqtt port
 
     const char *_project_id;
     const char *_thing_id;
