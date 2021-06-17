@@ -1,5 +1,5 @@
 /*
- *  This library will allow you to connect Data-Centeric Design hub through mqtt server and update property values.
+ *  This library will allow you to connect to the Data-Centeric Design hub through an mqtt server and update property values.
  *
  * Created by
  * Nirav Malsattar <n.malsattar@tudelft.nl>
