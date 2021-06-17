@@ -33,3 +33,7 @@
 
 *.iml
 .idea
+
+//Credentials file
+example/Arduino_nano33_MQTT/arduino_secrets.h
+example/Universal_MQTT/arduino_secrets.h
