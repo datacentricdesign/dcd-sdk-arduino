@@ -42,7 +42,7 @@ void setup() {
 
   // Make sure you have stored your credentials on "arduino_secrets.h" before running this command
 
-  dcdHub.connect(SECRET_SSID, SECRET_PASS, THING_ID, THING_TOKEN, "Arduino Nano 33 IoT");
+  dcdHub.setup(ssid, password, thing_id, project_id, private_key_str);
   Serial.println();
 
   GPS.begin(0x10);  // The I2C address to use is 0x10
@@ -110,11 +110,11 @@ void parseGPS() {
       Serial.print("Satellites: "); Serial.println((int)GPS.satellites);
 
       float gpsCoordinates[2] = {GPS.lat, GPS.lon};
-      
+
       //call to an update_property object to update property value as an array according to it's "proeprty_id"
       //{class_object}.update property (property_id, value[], dimension)
 
-      dcdHub.update_property("my-random-property3-e0cf", gpsCoordinates, 2);
+      dcdHub.update_property("dcd:properties:s0m3-numb3rs-4nd-d1g17s", gpsCoordinates, 2);
     }
     Serial.println("NO GPS Fix. Make sure you have GPS with the square ceramic antenna pointing up with a clear sky view");
   }

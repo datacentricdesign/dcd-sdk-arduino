@@ -16,7 +16,7 @@
 //
 // Schematic: https://datacentricdesign.org/docs/2019/04/30/sensors-force
 
- 
+
 #define PRESSURE_PIN  A0
 
 #include "arduino_secrets.h"
@@ -27,7 +27,7 @@ dcd_hub_arduino dcdHub; //creates a class object from library
 int value, prev_value = - 10000;     // int values (read from analog port, both the current and the previous)
 int deviation = 0;              // setting the minimum deviation between the measurements (0 by default)
                                 // up to 512 (although that is pretty useless)
-double voltage_value, newton_value;           // Converted to Voltage 
+double voltage_value, newton_value;           // Converted to Voltage
 
 void setup() {
   //Initialize serial and wait for port to open:
@@ -35,24 +35,24 @@ void setup() {
   while (!Serial) {
     ; // wait for serial port to connect. Needed for native USB port only
   }
-  
+
   // Connects to dcd hub using your secret credential from "arduino_secrets.h"
   //{class_object}.connect(SECRET_SSID, SECRET_PASS, THING_ID, THING_TOKEN)
-  
+
   // Make sure you have stored your credentials on "arduino_secrets.h" before running this command
-  
-  dcdHub.connect(SECRET_SSID, SECRET_PASS, THING_ID, THING_TOKEN, "Arduino Nano 33 IoT");
+
+  dcdHub.setup(ssid, password, thing_id, project_id, private_key_str);
   Serial.println();
 
-  pinMode(PRESSURE_PIN, INPUT); // setting pinmode to read analog value 
+  pinMode(PRESSURE_PIN, INPUT); // setting pinmode to read analog value
 
   deviation = 10;  // since there's a bit of a drift in the values if you put the same pressure over a certain period
-                   // we ignore a divergence of around 1 percent around the previous value. 
+                   // we ignore a divergence of around 1 percent around the previous value.
 }
 
 // This is based on a 3.3kΩ resistor being used, with weights on the center that do not linger more than 10 seconds
 // For situations that deviate from this, accuracy can be lost.
-double convert_to_newtons( double voltage) 
+double convert_to_newtons( double voltage)
 {
   /* General fitting model Exp2:
      f(x) = a*exp(b*x) + c*exp(d*x)
@@ -71,7 +71,7 @@ double convert_to_newtons( double voltage)
    double b = 0.9523;
    double c = -0.01461;
    double d = -2.231;
-    
+
   return( (a*exp(b*voltage) + c*exp(d* voltage)) * 9.81 ); // the result of the fit is in KgF to convert to newton we simply
                                                       // multiply by 9.81, if you want data in KgF, remove the final multiplication!
 }
@@ -90,9 +90,9 @@ void loop() {
   // this will help with having data ocuppy your buffer that is not a significant deviation.
   if( value >= (prev_value - deviation) && value <= (prev_value + deviation) )
     return;
-   
+
   voltage_value = double((value*5)) / 1023; // converting to voltage [ 0, 5] v.
-  newton_value = convert_to_newtons(voltage_value); // getting actual force value (careful using this, accuracy may not be ideal) 
+  newton_value = convert_to_newtons(voltage_value); // getting actual force value (careful using this, accuracy may not be ideal)
                                                     // sensitivity after 1Kgf and before 0.06kgf is limited, you can lower the deviation
                                                     // for some improvements
   Serial.print("Pressure: ");
@@ -104,12 +104,12 @@ void loop() {
   Serial.println(" N.");
 
   prev_value = value;
-  
-  // Some random 1D, 2D, 3D values to upload on the hub. Later, you can replace these with your sensors value.  
+
+  // Some random 1D, 2D, 3D values to upload on the hub. Later, you can replace these with your sensors value.
   float forceValue[] = {newton_value};
 
   //call to an update_property object to update property value as an array according to it's "proeprty_id"
   //{class_object}.update property (property_id, value[], dimension)
-  
-  dcdHub.update_property("random-02d3",forceValue, 1);
+
+  dcdHub.update_property("dcd:properties:s0m3-numb3rs-4nd-d1g17s",forceValue, 1);
 }
