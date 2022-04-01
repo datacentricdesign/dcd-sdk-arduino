@@ -3,17 +3,48 @@
 // You can check live updates on your DCD Hub dashboard after successfully
 // establishing a connection here: https://dwd.tudelft.nl/bucket/.
 //
+// TESTED & SUPPORTED BOARDS:
+// Arduino Nano 33, ItsyBitsy M4 Express, ESP32 DevKit v1.
+//
 // Created by
 // Nirav Malsattar <n.malsattar@tudelft.nl>
 // Adriaan Bernstein <a.j.bernstein@tudelft.nl>
 // Last modified on 15 June 2021
+
 
 #include "arduino_secrets.h"
 #include <dcd_hub_arduino.h>
 
 dcd_hub_arduino dcdHub; // Creates a class object from library
 
+// !!IMPORTANT!!
+// If using an external Wifi module (e.g. StudioLab BitsyExpander, Adafruit AirLift)
+// instead of on-board Wifi (e.g. Arduino Nano 33 IoT), the Wifi pins need to be
+// configured manually using Adafruit's WifiNINA library.
+//
+// For instructions refer to the "Install Library" paragraph here:
+// https://learn.adafruit.com/adafruit-airlift-bitsy-add-on-esp32-wifi-co-processor/arduino
+
+// Pin configuration for the Wifi radio on the StudioLab BitsyExpander board.
+// If using an Adafruit AirLift board, adjust these accordingly.
+#define SPIWIFI      SPI  // The SPI port
+#define SPIWIFI_CS   9    // Chip select pin
+#define ESP32_RST    12   // Reset pin
+#define SPIWIFI_BSY  11   // BUSY or READY pin
+#define ESP32_GPIO0  -1
+
+#if !defined(ARDUINO_SAMD_NANO_33_IOT) && !defined(ARDUINO_SAMD_MKRWIFI1010) && !defined(ARDUINO_AVR_UNO_WIFI_REV2) &&!defined(ESP32)
+ #define EXTERNAL_WIFI
+#endif
+
 void setup() {
+
+
+#if defined(EXTERNAL_WIFI)
+  // Set up Wifi pins for externail Wifi radio.
+  WiFi.setPins(SPIWIFI_CS, SPIWIFI_BSY, ESP32_RST, ESP32_GPIO0, &SPIWIFI);
+#endif
+
   // Initialize serial and wait for port to open:
   Serial.begin(115200);
   while (!Serial) {

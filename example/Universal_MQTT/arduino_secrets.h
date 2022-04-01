@@ -3,7 +3,7 @@ const char *ssid = "networkname";
 const char *password = "password";
 
 // DCD Hub details
-const char *project_id = "Arduino Nano 33 IoT Accelerometer";
+const char *project_id = "designation";
 const char *thing_id = "dcd:things:s0m3-numb3rs-4nd-d1g17s";
 
 // Configuration for JWT Token

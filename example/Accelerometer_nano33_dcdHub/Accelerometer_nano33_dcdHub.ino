@@ -33,7 +33,7 @@ void setup() {
 
   // Make sure you have stored your credentials on "arduino_secrets.h" before running this command
 
-  dcdHub.connect(SECRET_SSID, SECRET_PASS, THING_ID, THING_TOKEN, "Arduino Nano 33 IoT");
+  dcdHub.setup(ssid, password, thing_id, project_id, private_key_str);
   Serial.println();
 
   /* Initialise the BNO055 sensor */
@@ -71,9 +71,9 @@ void loop() {
   float orientationValue[] = {event.orientation.x, event.orientation.y, event.orientation.z};
 
   delay(100);
-  
+
   //call to an update_property object to update property value as an array according to it's "proeprty_id"
   //{class_object}.update property (property_id, value[], dimension)
 
-  dcdHub.update_property("my-random-property2-563b", orientationValue, 3);
+  dcdHub.update_property("dcd:properties:s0m3-numb3rs-4nd-d1g17s", orientationValue, 3);
 }
