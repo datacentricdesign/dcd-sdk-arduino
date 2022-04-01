@@ -1,5 +1,0 @@
-{
-    "board": "arduino:samd:nano_33_iot",
-    "port": "/dev/cu.usbmodem14201",
-    "sketch": "example/Arduino_nano33_MQTT/Arduino_nano33_MQTT.ino"
-}
